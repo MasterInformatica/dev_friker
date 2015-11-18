@@ -7,6 +7,7 @@ public class Hero : MonoBehaviour {
 	public float speed = 30;
 	public float rollMult = -45;
 	public float pitchMult = 30;
+	public float gameRestartDelay = 2f;
 	// Ship status information
 	[SerializeField]
 	private float _shieldLevel = 1; 
@@ -61,6 +62,19 @@ public class Hero : MonoBehaviour {
 		} else {
 			// Otherwise announce the original other.gameObject
 			print("Triggered: "+other.gameObject.name);
+		}
+	}
+
+	public float shieldLevel {
+		get{
+			return( _shieldLevel );
+		}set{
+			_shieldLevel = Mathf.Min( value, 4 );
+			// If the shield is going to be set to less than zero
+			if(value < 0) {
+				Destroy(this.gameObject);
+				Main.S.DelayedRestart( gameRestartDelay );
+			}
 		}
 	}
 }
