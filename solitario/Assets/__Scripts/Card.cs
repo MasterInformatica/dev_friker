@@ -19,7 +19,8 @@ public class Card : MonoBehaviour {
 	public CardDefinition   def; // Parsed from DeckXML.xml
 
     // List of the SpriteRenderer Components of this GameObject and its children
-    public SpriteRenderer[] spriteRenderers;
+    public SpriteRenderer[] spriteRenderers;
+
 
     void Start(){
         SetSortOrder(0); // Ensures that the card starts properly depth sorted
@@ -90,7 +91,7 @@ public class Card : MonoBehaviour {
 
     virtual public void OnMouseUpAsButton()
     {
-        print ( name ); // When clicked, this outputs the card name
+       print ( this.name );
     }
  
 }

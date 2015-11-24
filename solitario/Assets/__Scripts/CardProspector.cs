@@ -20,5 +20,4 @@ public class CardProspector : Card { // Make sure CardProspector extends Card
     // The SlotDef class stores information pulled in from the LayoutXML <slot>
     public SlotDef slotDef;
 
-
 }
