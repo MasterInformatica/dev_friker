@@ -20,4 +20,21 @@ public class CardProspector : Card { // Make sure CardProspector extends Card
     // The SlotDef class stores information pulled in from the LayoutXML <slot>
     public SlotDef slotDef;
 
+	public override void OnMouseUpAsButton ()
+	{
+		if (state == CardState.drawpile) {
+			Prospector.S.newTarget(Prospector.S.Draw());
+		} else if (state == CardState.tableau) {
+			if (hiddenBy.Count > 0)
+				return;
+			if( Prospector.S.possibleTarget(this) ){
+				Prospector.S.oneLessTableau(this);
+				Prospector.S.newTarget(this);
+			}
+		} else {
+			//base.OnMouseUpAsButton();
+			return;
+		}
+	}
+
 }

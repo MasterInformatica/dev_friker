@@ -18,7 +18,9 @@ public class Prospector : MonoBehaviour {
     public CardProspector target;
     public List<CardProspector> tableau;
     public List<CardProspector> discardPile;
-    public List<CardProspector> drawPile;
+    public List<CardProspector> drawPile;
+	public float gameRestartDelay = 2f;
+
 	void Awake() {
 		S = this; // Set up a Singleton for Prospector
 	}
@@ -34,11 +36,27 @@ public class Prospector : MonoBehaviour {
         layout.ReadLayout(layoutXML.text); // Pass LayoutXML to it
 
         drawPile = ConvertListCardsToListCardProspectors(deck.cards);
-        LayoutGame();
+        LayoutGame();
+
+	}
+
+	public void DelayedRestart( ) {
+		// Invoke the Restart() method in delay seconds
+		Invoke("Restart", gameRestartDelay);
+	}
+	public void Restart() {
+		// Reload _Scene_0 to restart the game
+		Application.LoadLevel("__Prospector_Scene_0");
+	}
+	private void Win(){
+		DelayedRestart ();
+	}
+	private void Lose(){
+		DelayedRestart ();
 	}
 
     // The Draw function will pull a single card from the drawPile and return it
-    CardProspector Draw()
+    public CardProspector Draw()
     {
         CardProspector cd = drawPile[0]; // Pull the 0th CardProspector
         drawPile.RemoveAt(0); // Then remove it from List<> drawPile
@@ -73,10 +91,31 @@ public class Prospector : MonoBehaviour {
             cp.layoutID = tSD.id;
             cp.slotDef = tSD;
             cp.state = CardState.tableau;
+			//cp.hiddenBy = List<CardProspector>();
+			//foreach(int tapa in tSD.hiddenBy){
+			//	cp.hiddenBy.Add(
+			//}
             cp.SetSortingLayerName(tSD.layerName); // Set the sorting layers
             tableau.Add(cp); // Add this CardProspector to the List<> tableau
         }
-        SlotDef dP = layout.drawPile;
+		for( int i = 0; i < layout.slotDefs.Count; i++) {
+			foreach( int tapa in layout.slotDefs[i].hiddenBy){
+				tableau[i].hiddenBy.Add(tableau[tapa]);
+			}
+		}
+		SlotDef dP = layout.discardPile;
+		cp = Draw ();
+		cp.faceUp = true;
+		cp.layoutID = dP.id;
+		cp.transform.parent = layoutAnchor;
+		cp.transform.localPosition = new Vector3 (dP.x,dP.y,-dP.layerID);
+		cp.slotDef = dP;
+		cp.state = CardState.target;
+		cp.SetSortingLayerName (dP.layerName);
+		discardPile.Add (cp);
+		target = cp;
+
+		dP = layout.drawPile;
         int N = 0;
         foreach (CardProspector c in drawPile)
         {
@@ -92,8 +131,58 @@ public class Prospector : MonoBehaviour {
             c.SetSortingLayerName(dP.layerName);
             N++;
         }
-    }
+    }
 
+	public void newTarget(CardProspector card){
+		target.state = CardState.discard;
+		target.SetSortingLayerName ("discard");
+		if (card.state == CardState.tableau)
+			tableau.Remove (card);
+		else if (card.state == CardState.drawpile)
+			drawPile.Remove (card);
+		card.faceUp = true;
+		card.layoutID = layout.discardPile.id;
+		card.transform.parent = layoutAnchor;
+		card.transform.localPosition = new Vector3 (layout.discardPile.x,layout.discardPile.y,-layout.discardPile.layerID);
+		card.slotDef = layout.discardPile;
+		card.state = CardState.target;
+		card.SetSortingLayerName (layout.discardPile.layerName);
+		discardPile.Add (card);
+		target = card;
+		if (tableau.Count == 0)
+			Win ();
+		else if (drawPile.Count == 0) {
+			bool lose = true;
+			foreach (CardProspector c in tableau){
+				if (c.faceUp && possibleTarget (c)){
+					lose = false;
+					break;
+				}
+			}
+			if(lose)
+				Lose ();
+		}
+	}
+
+	public void oneLessTableau(CardProspector card){
+
+		foreach (CardProspector c in tableau) {
+			c.hiddenBy.Remove(card);
+			if (c.hiddenBy.Count == 0)
+				c.faceUp = true;
+			/*foreach (CardProspector h in c.hiddenBy){
+				if( h == card)
+					c.hiddenBy.Remove(h);
+			}*/
+		}
+	}
+
+	public bool possibleTarget(CardProspector card){
+		int dis = target.rank - card.rank;
+		if (dis == 1 || dis == -1 || dis == 12 || dis == -12)
+			return true;
+		return false;
+	}
 
     List<CardProspector> ConvertListCardsToListCardProspectors(List<Card> lCD)
     {
