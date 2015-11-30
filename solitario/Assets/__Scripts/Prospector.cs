@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class Prospector : MonoBehaviour {
 	static public Prospector    S;
+
+    public GameObject prefabWin;
+    public GameObject prefabLose;
 	
 	public Deck                 deck;
 	public TextAsset            deckXML;
@@ -19,7 +22,7 @@ public class Prospector : MonoBehaviour {
     public List<CardProspector> tableau;
     public List<CardProspector> discardPile;
     public List<CardProspector> drawPile;
-	public float gameRestartDelay = 2f;
+	public float gameRestartDelay = 6f;
 
 	void Awake() {
 		S = this; // Set up a Singleton for Prospector
@@ -29,7 +32,7 @@ public class Prospector : MonoBehaviour {
 		deck = GetComponent<Deck>(); // Get the Deck
 		deck.InitDeck(deckXML.text); // Pass DeckXML to it
 		Deck.Shuffle(ref deck.cards);    // This shuffles the deck
-
+        
         // The ref keyword passes a reference to deck.cards, which allows
         // deck.cards to be modified by Deck.Shuffle()
         layout = GetComponent<Layout>(); // Get the Layout
@@ -49,9 +52,12 @@ public class Prospector : MonoBehaviour {
 		Application.LoadLevel("__Prospector_Scene_0");
 	}
 	private void Win(){
+        Instantiate(prefabWin);
 		DelayedRestart ();
 	}
 	private void Lose(){
+
+        Instantiate(prefabLose);
 		DelayedRestart ();
 	}
 
@@ -149,19 +155,28 @@ public class Prospector : MonoBehaviour {
 		card.SetSortingLayerName (layout.discardPile.layerName);
 		discardPile.Add (card);
 		target = card;
-		if (tableau.Count == 0)
-			Win ();
-		else if (drawPile.Count == 0) {
-			bool lose = true;
-			foreach (CardProspector c in tableau){
-				if (c.faceUp && possibleTarget (c)){
-					lose = false;
-					break;
-				}
-			}
-			if(lose)
-				Lose ();
-		}
+        if (tableau.Count == 0)
+        {
+            Puntos.S.Totaliza();
+            Win();
+        }
+        else if (drawPile.Count == 0)
+        {
+            bool lose = true;
+            foreach (CardProspector c in tableau)
+            {
+                if (c.faceUp && possibleTarget(c))
+                {
+                    lose = false;
+                    break;
+                }
+            }
+            if (lose)
+            {
+                Puntos.S.Totaliza();
+                Lose();
+            }
+        }
 	}
 
 	public void oneLessTableau(CardProspector card){
@@ -170,10 +185,6 @@ public class Prospector : MonoBehaviour {
 			c.hiddenBy.Remove(card);
 			if (c.hiddenBy.Count == 0)
 				c.faceUp = true;
-			/*foreach (CardProspector h in c.hiddenBy){
-				if( h == card)
-					c.hiddenBy.Remove(h);
-			}*/
 		}
 	}
 
