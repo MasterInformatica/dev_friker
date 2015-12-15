@@ -1,0 +1,42 @@
+#+title: BlockPuzzle, Propuesta para Práctica Final DEV
+#+author: Doménech Arellano, Jesús Javier
+#+date: 15 de Diciembre de 2015
+
+* Propuesta
+** Descripción
+
+  El juego que he elegido desarrollar, lo he bautizado como
+  \textbf{BlockPuzzle}. Su funcionamiento es muy sencillo aunque
+  superar niveles a veces puede volverse realmente complicado.\\
+
+  El juego consiste en mover tu pieza (cubo o paralelepípedo de base
+  cuadrada) por un mapa, tu figura irá girando por sus caras
+  avanzando. El objetivo final es llevar a tu figura a una casilla
+  especial, pero debes encajar en ella.
+
+** Componentes
+   El juego básicamente tendrá un par de escenas:
+   - Gestor de niveles.
+   - El nivel (será una escena genérica que cargue un nivel a partir
+     de un mapa).
+   - HighScores.
+   Además tendrá objetos que controlar, que son:
+   - Mapa.
+   - Pieza que juega.
+   - Puntuacion (por pasos y tiempo).
+   - Niveles disponibles (y con suerte, posibilidad de niveles
+     bloqueados).
+
+** Características
+  Inicialmente el objetivo de la práctica es conseguir una versión
+  jugable con los siguientes detalles:
+  - Lee mapas de XML.
+  - La figura tendrá una cara especial que será la que debe casar con
+    la casilla objetivo.
+  - Te puedes caer por los bordes o agujeros del mapa. 
+  - Al llegar a la casilla objetivo se pasa el nivel.
+  - Se cuenta el numero de pasos, hay tiempo limite por nivel.
+  - Acepta jugar con un Cubo o un paralelepípedo.
+  - Permite mapas de diferentes alturas.
+  - Memoria de Records de usuario.
+
