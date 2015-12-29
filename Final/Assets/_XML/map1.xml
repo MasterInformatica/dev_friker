@@ -1,0 +1,7 @@
+<map id="first">
+<size x="10" y="10" />
+<coord x="1" y="1" h="1" start="true" />
+<coord x="1" y="2" h="1" />
+<coord x="1" y="3" h="1" />
+<coord x="1" y="4" h="1" goal="true" />
+</map>

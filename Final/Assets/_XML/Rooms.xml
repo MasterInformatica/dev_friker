@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xml>
+	<level num="0" x_start="0" y_start="0" x_goal="4" y_goal="4" >
+		11111
+		1.1.1
+		21212
+		11111
+		11111
+	</level>
+	<level num="1" x_start="0" y_start="0" x_goal="4" y_goal="4" >
+		11111
+		1.1.1
+		21212
+		11111
+		11112
+	</level>
+	<level num="2" x_start="0" y_start="0" x_goal="4" y_goal="4" >
+		11111
+		1.1.1
+		21212
+		22222
+		33333
+	</level>
+	<level num="3" x_start="0" y_start="0" x_goal="4" y_goal="4" >
+		11111
+		22222
+		33333
+		44444
+		55555
+	</level>
+</xml>
