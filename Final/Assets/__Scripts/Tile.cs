@@ -46,7 +46,7 @@ public class Tile : PT_MonoBehaviour {
 	// Methods
 	public void AdjustHeight() {
 		// Moves the block up or down based on _height
-		Vector3 vertOffset = Vector3.back*(_height-0.5f);
+		Vector3 vertOffset = Vector3.back*(_height);
 		// The -0.5f shifts the Tile down 0.5 units so that it's top surface is
 		// at z=0 when pos.z=0 and height=0
 		transform.position = _pos+vertOffset;

@@ -14,7 +14,6 @@ public class LayoutTiles : MonoBehaviour {
 	public string levelNumber = "0"; // Current level # as a string
 	public GameObject tilePrefab; // Prefab for all Tiles
 	public GameObject goalPrefab; // Prefab for all Tiles
-	public GameObject playerPrefab; // Prefab for player
 	public bool ________________;
 	public PT_XMLReader levelsXMLR;
 	public PT_XMLHashList levelsXML;
@@ -33,6 +32,7 @@ public class LayoutTiles : MonoBehaviour {
 		levelsXML = levelsXMLR.xml["xml"][0]["level"]; // Pull all the <room>s
 		// Build the 0th Room
 		BuildLevel(levelNumber);
+
 	}
 	public void BuildLevel(PT_XMLHashtable level) {
 		// Destroy any old Tiles
@@ -41,8 +41,6 @@ public class LayoutTiles : MonoBehaviour {
 			Destroy(t.gameObject);
 		}
 		string lNumStr = level.att("num");
-		// TODO: Get Start point  ( x_start, y_start )
-		// TODO: Get Goal point   ( x_goal,  y_goal  )
 		int x_start = int.Parse (level.att ("x_start"));
 		int y_start = int.Parse (level.att ("y_start"));
 		int x_goal = int.Parse (level.att ("x_goal"));
@@ -58,6 +56,8 @@ public class LayoutTiles : MonoBehaviour {
 		string type;
 		GameObject go;
 		int height;
+		int z_start = -1;
+		int[,] map = new int[100,100];
 		float maxY = levelRows.Length-1;
 		// These loops scan through each tile of each row of the room
 		for (int y=0; y<levelRows.Length; y++) {
@@ -70,10 +70,13 @@ public class LayoutTiles : MonoBehaviour {
 				case ".":
 				case " ":
 				case "_":
+				case "0":
 					height = 0;
+					map[x,y] = 0;
 					break;
 				default:
 					height = int.Parse(type);
+					map[x,y] = height;
 					for (int h = 0; h < height; h++) {
 						if (y == y_goal && x == x_goal && h == height-1){
 							// Instantiate a new TilePrefab
@@ -86,27 +89,20 @@ public class LayoutTiles : MonoBehaviour {
 						// Set the parent Transform to tileAnchor
 						ti.transform.parent = tileAnchor;
 						// Set the position of the tile
-						ti.pos = new Vector3 (x,h*0.5f,y);
+						ti.pos = new Vector3 (x,h,y);
 						tiles [x, h, y] = ti; // Add ti to the tiles 2D Array
 						// Set the type, height, and texture of the Tile
 						ti.type = "baldosa";
 					}
 					if (y == y_start && x == x_start){
-						go = Instantiate (playerPrefab) as GameObject;
-						ti = go.GetComponent<Tile> ();
-						// Set the parent Transform to tileAnchor
-						ti.transform.parent = tileAnchor;
-						// Set the position of the tile
-						ti.pos = new Vector3 (x,height*0.5f,y);
-						tiles [x, height, y] = ti; // Add ti to the tiles 2D Array
-						// Set the type, height, and texture of the Tile
-						ti.type = "player";
+						z_start = height;
 					}
 
 					break;
 				}
 			}
 		}
+		Game.S.setMap (map, x_goal, y_goal, x_start, y_start, z_start );
 
 	}
 	// Build a level based on level number. This is an alternative version of
