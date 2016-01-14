@@ -10,7 +10,7 @@ public class Game : MonoBehaviour {
 	static public Game S;
 	int x_g,y_g,x_p,y_p,z_p;
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		S = this;
 	}
 	
@@ -22,9 +22,9 @@ public class Game : MonoBehaviour {
 	public void drawPlayer(){
 			GameObject go = Instantiate (playerPrefab) as GameObject;
 			pl = go.GetComponent<Player> ();
-			float z = go.transform.localScale.y;// * 0.5750011f;
+			float z = go.transform.localScale.y/2;// * 0.5750011f;
 			// Set the position of the tile
-			pl.pos = new Vector3 (x_p,z_p*z,y_p);			
+			pl.pos = new Vector3 (x_p,z_p-0.5f+z,y_p);			
 	}
 
 	public void setMap(int[,] m,int x_goal,int y_goal, int x_start, int y_start, int z_start){
