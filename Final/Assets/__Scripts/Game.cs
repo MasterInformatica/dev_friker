@@ -8,7 +8,7 @@ public class Game : MonoBehaviour {
 	Player pl;
 	public int[,] map;
 	static public Game S;
-	int x_g,y_g,x_p,y_p,z_p;
+	public int x_g,y_g,x_p,y_p,z_p;
 	// Use this for initialization
 	void Awake () {
 		S = this;
@@ -43,26 +43,31 @@ public class Game : MonoBehaviour {
 	}
 
 	public int difHeight(string dir){
-		Utils.tr (x_p, y_p, dir);
-		int actual = map [x_p,y_p];
+		int x, y;
+		int[] pos = pl.getPos ();
+		x = pos[0];
+		y = pos[1];
+		Utils.tr (x, y, dir);
+		int actual = map [x,y];
 		int futura = actual;
 		switch (dir) {
 		case "W":
-			futura = map [x_p+1,y_p];
+			futura = map [x+1,y];
 			break;
 		case "S":
-			futura = map [x_p-1,y_p];
+			futura = map [x-1,y];
 			break;
 		case "A":
-			futura = map [x_p,y_p-1];
+			futura = map [x,y-1];
 			break;
 		case "D":
-			futura = map [x_p,y_p+1];
+			futura = map [x,y+1];
 			break;
 		default:
 			futura = actual;
 			break;
 		}
+		Utils.tr (futura - actual);
 		return futura - actual;
 
 	}

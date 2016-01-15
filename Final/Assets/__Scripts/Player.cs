@@ -8,7 +8,8 @@ public class Player : PT_MonoBehaviour {
 
 	private int _height = 0;
 	private Vector3 _pos;
-
+	public int x, y;
+	string dir;
 
 	// Estos dos bools definen el estado de la figura tumbada o de pie.
 	//st tiene el state del movimiento.
@@ -60,26 +61,26 @@ public class Player : PT_MonoBehaviour {
 			case StMov.Parado:
 				Vector3 offset = Vector3.zero;
 				int check = 1;
-				string dir = "";
+				dir = "";
 				if (Game.S.checkMapHole ()) {	
 					break;
 				} else if (Input.GetKeyDown ("up") || Input.GetKeyDown ("w")) {
 					dir = "W";
 					//offset = Vector3.forward;
-					pivotAngle = Vector3.right;
+					//pivotAngle = Vector3.right;
 				} else if (Input.GetKeyDown ("down") || Input.GetKeyDown ("s")) {
 					dir = "S";
 					//offset = -Vector3.forward;
-					pivotAngle = -Vector3.right;
+					//pivotAngle = -Vector3.right;
 				} else if (Input.GetKeyDown ("left") || Input.GetKeyDown ("a")) {
 					dir = "A";
 					//offset = -Vector3.right;
-					pivotAngle = Vector3.forward;
+					//pivotAngle = Vector3.forward;
 					//check = 2;
 				} else if (Input.GetKeyDown ("right") || Input.GetKeyDown ("d")) {
 					dir = "D";
 					//offset = Vector3.right;
-					pivotAngle = -Vector3.forward;
+					//pivotAngle = -Vector3.forward;
 					//check = 2;
 				} else {
 					break;
@@ -93,6 +94,7 @@ public class Player : PT_MonoBehaviour {
 				goto case "W";
 			case "W":
 				offset = Vector3.forward*sentido;
+				pivotAngle = Vector3.right*sentido;
 				if(inBase){ //la base siempre es cuadrada de tamaño 1
 					inBase = false;
 					change = false;
@@ -110,6 +112,7 @@ public class Player : PT_MonoBehaviour {
 				goto case "D";
 			case "D":
 				offset = Vector3.right*sentido;
+				pivotAngle = Vector3.forward*(-1.0f*sentido);
 				if(inBase){ //la base siempre es cuadrada de tamaño 1
 					inBase = false;
 					change = true;
@@ -126,38 +129,33 @@ public class Player : PT_MonoBehaviour {
 				break;
 			}
 
-				/*int dif = Game.S.difHeight(dir);
-					if(dif < 0){ // caida
-						pivotLimit = 180.0f;
-					}else if (dif == 0){ // mismo nivel
-						pivotLimit = 90.0f;
-					}else{ //subida
-						pivotLimit = 180.0f;
-					}*/
-				Utils.tr ("offset and pos",offset, transform.position,altura);
-/*			Vector3 mitad = getMitad(dir);
+			int dif = Game.S.difHeight(dir);
+			if(dif < 0){ // caida
+				pivotLimit = 180.0f;
 
-			Utils.tr (mitad);
-			pivotPoint = transform.position-mitad + offset / 2;/*/
+			}else if (dif == 0){ // mismo nivel
+				pivotLimit = 90.0f;
+			}else{ //subida
+				pivotLimit = 180.0f;
+				altura = -altura;
+			}
 			pivotPoint = transform.position-altura + offset; //*/
-			Utils.tr ("pivot",pivotPoint);
 			target.position = pivotPoint;
 
-//			actualizaEstado (dir);
-			st = StMov.Mov;
-				break;
-		case StMov.Mov:
 
+			st = StMov.Mov;
+			break;
+		case StMov.Mov:
 				float amount = Time.deltaTime * speed * 20.0f;
 				pivotAmount = pivotAmount + amount;
-				//Utils.tr(pivotAmount,pivotPoint);
-				amount = amount - (pivotAmount > 90.0f ? pivotAmount - 90.0f : 0.0f);
+			amount = amount - (pivotAmount > pivotLimit ? pivotAmount - pivotLimit : 0.0f);
 				transform.RotateAround (pivotPoint, pivotAngle, amount);
 				
-				if (pivotAmount >= 90f) {
+			if (pivotAmount >= pivotLimit) {
 					target.position = transform.position;//hides the target after it completes rotating.
 					st = StMov.Parado;
 					pivotAmount = 0;
+				 actualizaPos (dir);
 				}
 				break;
 			default:
@@ -165,59 +163,29 @@ public class Player : PT_MonoBehaviour {
 		}
 	}
 
-	public void actualizaEstado(string dir){
-		if (inBase) {
-			inBase = false;
-			switch(dir){
-			case "W":
-			case "S":
-				change = false;
-				break;
-			case "A":
-			case "D":
-				change = true;
-				break;
-			}
-		} else {
-			switch(dir){
-			case "W":
-			case "S":
-				if(!change)
-					inBase = true;
-				break;
-			case "A":
-			case "D":
-				if(change)
-					inBase = true;
-				break;
-			}
+	public void actualizaPos(string dir){
+		switch (dir) {
+		case "W":
+			y++;
+			break;
+		case "S":
+			y--;
+			break;
+		case "A":
+			x--;
+			break;
+		case "D":
+			x++;
+			break;
+		default:
+			break;
+
+
 		}
-		//inBase = true si estoy en base
-		//change
-		// st llamando a getaltura
 	}
 
-	public Vector3 getMitad(string dir){
-		Utils.tr ("LS", transform.localScale);
-		Vector3 m = Vector3.zero;
-		if (inBase) {
-			m = new Vector3(0.0f,transform.localScale.y/2.0f,0.0f);
-		} else {
-			switch(dir){
-			case "W":
-			case "S":
-				m = new Vector3(0.0f,transform.localScale.x,0.0f);
-				break;
-			case "A":
-			case "D":
-				m = new Vector3(0.0f,0.0f,0.0f);
-				break;
-			}
-		}
-		return m;
+	public int[] getPos(){
+		return new int[]{x,y};
 	}
-
-
-
-
+	
 }
