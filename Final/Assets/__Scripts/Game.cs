@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+public class ApplicationModel  
+{
+	static public int level = 0;    // this is reachable from everywhere
+	static public GameObject playerPrefab;
+	static public int totalMovs = 0;
+}
 public class Game : MonoBehaviour {
-	public GameObject playerPrefab; // Prefab for player
-
-	public bool __________________ = false;
-	Player pl;
-	public int[,] map;
 	static public Game S;
+	public bool __________________ = false;
+	public Player pl;
+	public int[,] map = new int[100,100];
 	public int x_g,y_g,x_p,y_p,z_p;
 	// Use this for initialization
 	void Awake () {
@@ -18,9 +21,13 @@ public class Game : MonoBehaviour {
 	void Update () {
 	
 	}
+	public void playerDestroyed(){
+		
+		Application.LoadLevel( "menu" );
+	}  
 
 	public void drawPlayer(){
-			GameObject go = Instantiate (playerPrefab) as GameObject;
+			GameObject go = Instantiate (ApplicationModel.playerPrefab) as GameObject;
 			pl = go.GetComponent<Player> ();
 			float z = go.transform.localScale.y/2;// * 0.5750011f;
 			// Set the position of the tile
@@ -37,8 +44,12 @@ public class Game : MonoBehaviour {
 
 		drawPlayer ();
 	}
-	public bool checkMapHole(){
-		
+	public bool checkMapHole(int x, int y){
+		return map [x, y] == 0;
+	}
+	public bool checkGoal(int x, int y){
+		if (x_g == x && y_g == y)
+			return true;
 		return false;
 	}
 
@@ -52,23 +63,25 @@ public class Game : MonoBehaviour {
 		int futura = actual;
 		switch (dir) {
 		case "W":
-			futura = map [x+1,y];
+			futura = map [x,y+1];
 			break;
 		case "S":
-			futura = map [x-1,y];
-			break;
-		case "A":
 			futura = map [x,y-1];
 			break;
+		case "A":
+			futura = map [x-1,y];
+			break;
 		case "D":
-			futura = map [x,y+1];
+			futura = map [x+1,y];
 			break;
 		default:
 			futura = actual;
 			break;
 		}
-		Utils.tr (futura - actual);
-		return futura - actual;
+		if (futura == 0)
+			return -1;
+		else
+			return futura - actual;
 
 	}
 }

@@ -1,16 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
-public enum StMov {Parado,Subiendo,Bajando,Mov};
+public enum StMov {Parado,Mov,Caer,Morir,Ganar};
 
 public class Player : PT_MonoBehaviour {
-
+	public static float bottomY = -20f;
+	public float speed = 300.0f;
 	public bool __________________ = false;
-
 	private int _height = 0;
 	private Vector3 _pos;
 	public int x, y;
-	string dir;
-
 	// Estos dos bools definen el estado de la figura tumbada o de pie.
 	//st tiene el state del movimiento.
 	public bool _______State______ = false;
@@ -19,19 +17,24 @@ public class Player : PT_MonoBehaviour {
 	public StMov st = StMov.Parado;
 	public bool _________________ = false;
 	//----------------------------------------------------
+	public bool _______Walk_____ = false;
+	public string dir;
 	public Vector3 pivotPoint = Vector3.zero;
 	public Vector3 pivotAngle = Vector3.zero;
 	public float pivotAmount = 0.0f;
 	public float pivotLimit = 90.0f;
-	public int longways=0;
-	
-	public float speed = 300.0f;
-	private Transform target;
+	public Transform target;
+	public bool ___________________ = false;
+	public bool muerte = false;
+
+
 	
 	new public Vector3 pos {
 		get { return( _pos ); }
 		set {
 			_pos = value;
+			x = (int)_pos.x;
+			y = (int)_pos.z;
 			AdjustHeight();
 		}
 	}
@@ -52,41 +55,33 @@ public class Player : PT_MonoBehaviour {
 		target.gameObject.layer=2;
 		target.name="Target";
 		DestroyImmediate(target.GetComponent<Collider>());
-		//target.GetComponent<Renderer>().enabled = false;// comment out not to see the pivot point.
+		target.GetComponent<Renderer>().enabled = false;// comment out not to see the pivot point.
 	}
 	
 	public void Update () {
-		switch (st) 
-		{
+		switch (st) {
 			case StMov.Parado:
-				Vector3 offset = Vector3.zero;
-				int check = 1;
-				dir = "";
-				if (Game.S.checkMapHole ()) {	
-					break;
-				} else if (Input.GetKeyDown ("up") || Input.GetKeyDown ("w")) {
-					dir = "W";
-					//offset = Vector3.forward;
-					//pivotAngle = Vector3.right;
-				} else if (Input.GetKeyDown ("down") || Input.GetKeyDown ("s")) {
-					dir = "S";
-					//offset = -Vector3.forward;
-					//pivotAngle = -Vector3.right;
-				} else if (Input.GetKeyDown ("left") || Input.GetKeyDown ("a")) {
-					dir = "A";
-					//offset = -Vector3.right;
-					//pivotAngle = Vector3.forward;
-					//check = 2;
-				} else if (Input.GetKeyDown ("right") || Input.GetKeyDown ("d")) {
-					dir = "D";
-					//offset = Vector3.right;
-					//pivotAngle = -Vector3.forward;
-					//check = 2;
-				} else {
-					break;
-				}
+			if (Game.S.checkMapHole (x,y)) {
+				st = StMov.Caer;
+				break;
+			} else if (Game.S.checkGoal(x,y)){
+				st = StMov.Ganar;
+				break;
+			}	else if (Input.GetKeyDown ("up") || Input.GetKeyDown ("w")) {
+				dir = "W";
+			} else if (Input.GetKeyDown ("down") || Input.GetKeyDown ("s")) {
+				dir = "S";
+			} else if (Input.GetKeyDown ("left") || Input.GetKeyDown ("a")) {
+				dir = "A";
+			} else if (Input.GetKeyDown ("right") || Input.GetKeyDown ("d")) {
+				dir = "D";
+			} else {
+				break;
+			}
+			ApplicationModel.totalMovs++;
 			float sentido = 1.0f;
 			Vector3 altura = new Vector3(0.0f,0.5f,0.0f);
+			Vector3 offset = Vector3.zero;
 			switch(dir)
 			{
 			case "S":
@@ -132,13 +127,17 @@ public class Player : PT_MonoBehaviour {
 			int dif = Game.S.difHeight(dir);
 			if(dif < 0){ // caida
 				pivotLimit = 180.0f;
-
 			}else if (dif == 0){ // mismo nivel
 				pivotLimit = 90.0f;
-			}else{ //subida
+			}else if (dif == 1){ //subida
 				pivotLimit = 180.0f;
 				altura = -altura;
+			}else{
+				break;
 			}
+			if (dif < -1 ) 
+				muerte = true;
+
 			pivotPoint = transform.position-altura + offset; //*/
 			target.position = pivotPoint;
 
@@ -146,36 +145,51 @@ public class Player : PT_MonoBehaviour {
 			st = StMov.Mov;
 			break;
 		case StMov.Mov:
-				float amount = Time.deltaTime * speed * 20.0f;
-				pivotAmount = pivotAmount + amount;
+			float amount = Time.deltaTime * speed * 20.0f;
+			pivotAmount = pivotAmount + amount;
 			amount = amount - (pivotAmount > pivotLimit ? pivotAmount - pivotLimit : 0.0f);
-				transform.RotateAround (pivotPoint, pivotAngle, amount);
+			transform.RotateAround (pivotPoint, pivotAngle, amount);
 				
 			if (pivotAmount >= pivotLimit) {
-					target.position = transform.position;//hides the target after it completes rotating.
+				target.position = transform.position;//hides the target after it completes rotating.
+				if(muerte)
+					st = StMov.Morir;
+				else
 					st = StMov.Parado;
-					pivotAmount = 0;
-				 actualizaPos (dir);
-				}
-				break;
-			default:
-				break;
+				pivotAmount = 0;
+			    actualizaPos (dir);
+			}
+			break;
+		case StMov.Caer:
+			transform.GetComponent<Rigidbody>().useGravity = true;
+			transform.GetComponent<Rigidbody>().isKinematic = false;
+			if (transform.position.y < bottomY)
+				st = StMov.Morir;
+			break;
+		case StMov.Morir:
+			morir ();
+			break;
+		default:
+			break;
 		}
 	}
-
+	public void morir(){
+		Destroy( this.gameObject );
+		Game.S.playerDestroyed();
+	}
 	public void actualizaPos(string dir){
 		switch (dir) {
-		case "W":
-			y++;
-			break;
-		case "S":
-			y--;
+		case "D":
+			x++;
 			break;
 		case "A":
 			x--;
 			break;
-		case "D":
-			x++;
+		case "S":
+			y--;
+			break;
+		case "W":
+			y++;
 			break;
 		default:
 			break;

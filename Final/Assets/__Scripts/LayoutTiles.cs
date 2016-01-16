@@ -30,9 +30,7 @@ public class LayoutTiles : MonoBehaviour {
 		levelsXMLR = new PT_XMLReader(); // Create a PT_XMLReader
 		levelsXMLR.Parse(levelText.text); // Parse the Rooms.xml file
 		levelsXML = levelsXMLR.xml["xml"][0]["level"]; // Pull all the <room>s
-		// Build the 0th Room
-		BuildLevel(levelNumber);
-
+		BuildLevel (ApplicationModel.level);
 	}
 	public void BuildLevel(PT_XMLHashtable level) {
 		// Destroy any old Tiles
@@ -104,6 +102,9 @@ public class LayoutTiles : MonoBehaviour {
 		}
 		Game.S.setMap (map, x_goal, y_goal, x_start, y_start, z_start );
 
+	}
+	public void BuildLevel(int num){
+		BuildLevel (num.ToString ());
 	}
 	// Build a level based on level number. This is an alternative version of
 	// BuildLevel that grabs levelXML based on num.
