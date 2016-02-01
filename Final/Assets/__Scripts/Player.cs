@@ -25,6 +25,7 @@ public class Player : PT_MonoBehaviour {
 	public float pivotLimit = 90.0f;
 	public Transform target;
 	public bool ___________________ = false;
+	public int movs = 0;
 	public bool muerte = false;
 
 
@@ -78,7 +79,7 @@ public class Player : PT_MonoBehaviour {
 			} else {
 				break;
 			}
-			ApplicationModel.totalMovs++;
+			movs ++;
 			float sentido = 1.0f;
 			Vector3 altura = new Vector3(0.0f,0.5f,0.0f);
 			Vector3 offset = Vector3.zero;
@@ -138,7 +139,7 @@ public class Player : PT_MonoBehaviour {
 			if (dif < -1 ) 
 				muerte = true;
 
-			pivotPoint = transform.position-altura + offset; //*/
+			pivotPoint = transform.position-altura + offset; 
 			target.position = pivotPoint;
 
 
@@ -151,7 +152,6 @@ public class Player : PT_MonoBehaviour {
 			transform.RotateAround (pivotPoint, pivotAngle, amount);
 				
 			if (pivotAmount >= pivotLimit) {
-				target.position = transform.position;//hides the target after it completes rotating.
 				if(muerte)
 					st = StMov.Morir;
 				else
@@ -169,11 +169,20 @@ public class Player : PT_MonoBehaviour {
 		case StMov.Morir:
 			morir ();
 			break;
+		case StMov.Ganar:
+			ganar ();
+			break;
 		default:
 			break;
 		}
 	}
 	public void morir(){
+		Destroy( this.gameObject );
+		Game.S.playerDestroyed();
+	}
+	public void ganar(){
+		ApplicationModel.totalMovs += movs;
+		ApplicationModel.ActualLevel += 1;
 		Destroy( this.gameObject );
 		Game.S.playerDestroyed();
 	}

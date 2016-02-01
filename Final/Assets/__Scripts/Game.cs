@@ -1,15 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
-public class ApplicationModel  
+
+[System.Serializable]
+public class ApplicationModel
 {
 	static public int level = 0;    // this is reachable from everywhere
 	static public GameObject playerPrefab;
 	static public int totalMovs = 0;
+	static public int ActualLevel = 0;
+	static public int totalPoints = 0;
 }
 public class Game : MonoBehaviour {
 	static public Game S;
 	public bool __________________ = false;
 	public Player pl;
+	public int levelPoints = 0;
 	public int[,] map = new int[100,100];
 	public int x_g,y_g,x_p,y_p,z_p;
 	// Use this for initialization
