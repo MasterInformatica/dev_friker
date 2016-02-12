@@ -9,16 +9,17 @@ public class ButtonMenu : MonoBehaviour {
 	void Awake() {
 		//BORRAR CUANDO ACABES
 		if (realLevel == 0)
-			Utils.tr ("level allow: ",ApplicationModel.ActualLevel,"total movs: ",ApplicationModel.totalMovs);
-		if (ApplicationModel.ActualLevel < realLevel) {
+			Utils.tr ("level allow: ",ApplicationModel.MaxLevel,"total movs: ",ApplicationModel.totalMovs);
+		/*if (ApplicationModel.MaxLevel < realLevel) {
 			Destroy (this.gameObject);
-		} else {
+		} else {*/
 			Transform launchPointTrans = transform.Find ("LaunchPoint");
-		}
+		//}
 	}
 	void OnMouseDown() {
 		ApplicationModel.playerPrefab = playerPrefab;
-		ApplicationModel.level = level;
+		ApplicationModel.XMLlevel = level;
+		ApplicationModel.ActualLevel = realLevel;
 		Application.LoadLevel ("blocker");
 	}
 }

@@ -30,7 +30,7 @@ public class LayoutTiles : MonoBehaviour {
 		levelsXMLR = new PT_XMLReader(); // Create a PT_XMLReader
 		levelsXMLR.Parse(levelText.text); // Parse the Rooms.xml file
 		levelsXML = levelsXMLR.xml["xml"][0]["level"]; // Pull all the <room>s
-		BuildLevel (ApplicationModel.level);
+		BuildLevel (ApplicationModel.XMLlevel);
 	}
 	public void BuildLevel(PT_XMLHashtable level) {
 		// Destroy any old Tiles

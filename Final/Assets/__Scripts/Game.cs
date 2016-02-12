@@ -2,13 +2,15 @@
 using System.Collections;
 
 [System.Serializable]
-public class ApplicationModel
+public static class ApplicationModel
 {
-	static public int level = 0;    // this is reachable from everywhere
+	static public int XMLlevel = 0;    // this is reachable from everywhere
 	static public GameObject playerPrefab;
 	static public int totalMovs = 0;
+	static public int MaxLevel = 0;
 	static public int ActualLevel = 0;
 	static public int totalPoints = 0;
+	
 }
 public class Game : MonoBehaviour {
 	static public Game S;
