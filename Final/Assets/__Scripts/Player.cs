@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
-public enum StMov {Parado,Mov,Caer,Morir,Ganar};
+public enum StMov {Parado,Mov,Ajustar,Caer,Morir,Ganar};
 
 public class Player : PT_MonoBehaviour {
+
 	public static float bottomY = -20f;
 	public float speed = 300.0f;
 	public bool __________________ = false;
@@ -25,6 +27,9 @@ public class Player : PT_MonoBehaviour {
 	public Transform target;
 	public bool ___________________ = false;
 	public int movs = 0;
+	public float time = 0;
+	public float endTime = 0;
+	public float delta = 100f;
 	public bool muerte = false;
 		
 	new public Vector3 pos {
@@ -88,7 +93,8 @@ public class Player : PT_MonoBehaviour {
 		target.gameObject.layer=2;
 		target.name="Target";
 		DestroyImmediate(target.GetComponent<Collider>());
-		//target.GetComponent<Renderer>().enabled = false;// comment out not to see the pivot point.
+		target.GetComponent<Renderer>().enabled = false;// comment out not to see the pivot point.
+		endTime = Time.time + ApplicationModel.MaxTime;
 	}
 	public string getDir(){
 		if (Input.GetKeyDown ("up") || Input.GetKeyDown ("w")) {
@@ -102,7 +108,20 @@ public class Player : PT_MonoBehaviour {
 		}
 		return "none";
 	}
+	public void updateText(){
+		Game.S.movsText.text = "Movimientos: " + movs;
+		Game.S.timeText.text = "Tiempo restante: " + time + " s";
+	}
+	public void checkTime(){
+		time = endTime - Time.time;
+		if (time < 0.0f) {
+			time = 0.0f;
+			st = StMov.Morir;
+		}
+	}
 	public void Update () {
+		checkTime ();
+		updateText ();
 		switch (st) {
 			case StMov.Parado:
 			if (Game.S.checkMapHole (x,y)) {
@@ -198,8 +217,8 @@ public class Player : PT_MonoBehaviour {
 			}
 			break;
 		case StMov.Caer:
-			transform.GetComponent<Rigidbody>().useGravity = true;
-			transform.GetComponent<Rigidbody>().isKinematic = false;
+			//transform.GetComponent<Rigidbody>().useGravity = true;
+			//transform.GetComponent<Rigidbody>().isKinematic = false;
 			if (transform.position.y < bottomY)
 				st = StMov.Morir;
 			break;
@@ -218,8 +237,12 @@ public class Player : PT_MonoBehaviour {
 		Game.S.playerDestroyed();
 	}
 	public void ganar(){
+		if (ApplicationModel.ScoreMovs [ApplicationModel.ActualLevel] > movs || ApplicationModel.ScoreMovs [ApplicationModel.ActualLevel] < 1) {
+			ApplicationModel.ScoreMovs [ApplicationModel.ActualLevel] = movs;
+		}
+		if (ApplicationModel.ScoreTime [ApplicationModel.ActualLevel] > ApplicationModel.MaxTime-Mathf.RoundToInt(time) || ApplicationModel.ScoreTime [ApplicationModel.ActualLevel] < 1)
+			ApplicationModel.ScoreTime [ApplicationModel.ActualLevel] = ApplicationModel.MaxTime-Mathf.RoundToInt(time);
 		if (ApplicationModel.MaxLevel == ApplicationModel.ActualLevel) {
-			ApplicationModel.totalMovs += movs;
 			ApplicationModel.MaxLevel += 1;
 		}
 		Destroy( this.gameObject );

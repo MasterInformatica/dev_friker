@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xml>
-	<level num="1" x_start="1" y_start="1" x_goal="4" y_goal="4" >
+	<level num="1" x_start="1" y_start="1" x_goal="4" y_goal="4">
 		0000000
 		0111110
 		0101010
@@ -9,7 +9,7 @@
 		0111110
 		0000000
 	</level>
-	<level num="2" x_start="1" y_start="1" x_goal="4" y_goal="4" >
+	<level num="2" x_start="1" y_start="1" x_goal="4" y_goal="4">
 		0000000
 		0111120
 		0101030
@@ -18,7 +18,7 @@
 		0111120
 		0000000
 	</level>
-	<level num="3" x_start="1" y_start="1" x_goal="4" y_goal="4" >
+	<level num="3" x_start="1" y_start="1" x_goal="4" y_goal="4">
 		0000000
 		0111110
 		0101010
@@ -27,7 +27,7 @@
 		0333330
 		0000000
 	</level>
-	<level num="4" x_start="1" y_start="1" x_goal="4" y_goal="4" >
+	<level num="4" x_start="1" y_start="1" x_goal="4" y_goal="4">
 		0000000
 		0111110
 		0222220
@@ -36,7 +36,7 @@
 		0555550
 		0000000
 	</level>
-	<level num="5" x_start="1" y_start="1" x_goal="4" y_goal="4" >
+	<level num="5" x_start="1" y_start="1" x_goal="4" y_goal="4">
 		0000000
 		0111110
 		0101010
@@ -45,7 +45,7 @@
 		0111110
 		0000000
 	</level>
-	<level num="6" x_start="1" y_start="1" x_goal="4" y_goal="4" >
+	<level num="6" x_start="1" y_start="1" x_goal="4" y_goal="4">
 		0000000
 		0111120
 		0101030
@@ -54,7 +54,7 @@
 		0111120
 		0000000
 	</level>
-	<level num="7" x_start="1" y_start="1" x_goal="4" y_goal="4" >
+	<level num="7" x_start="1" y_start="1" x_goal="4" y_goal="4">
 		0000000
 		0111110
 		0101010
