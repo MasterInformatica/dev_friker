@@ -8,18 +8,19 @@ public class Menu : MonoBehaviour {
 	public Text gtTime; // The GT_Score GUIText
 
 
-	public void ShowGT(){
+	public void Start(){
+		/*
+		 * Calcular el tiempo total y movimientos usados
+		 * Mostrar record general al usuario
+		 */
 		int sumT=0,sumM = 0;
 		for (int i = 0; i < ApplicationModel.ScoreMovs.Length; i++)
 		{
 			sumT += ApplicationModel.ScoreTime[i];
 			sumM += ApplicationModel.ScoreMovs[i];
 		}
-		gtMovs.text = "Movimientos totales: "+sumM;
-		gtTime.text = "Tiempo utilizado: "+ sumT + " s";
+		gtMovs.text = "Total Mov: "+sumM;
+		gtTime.text = "Tiempo: "+ sumT + " s";
 	}
 
-	void Update () {
-		ShowGT();
-	}
 }

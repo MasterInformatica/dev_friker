@@ -68,19 +68,17 @@ public class LayoutTiles : MonoBehaviour {
 				case ".":
 				case " ":
 				case "_":
-				case "0":
+				case "0": // cualquiera de estas cosas se interpreta como hueco
 					height = 0;
 					map[x,y] = 0;
 					break;
-				default:
+				default:// todo lo demas sera un numero que indica la altura
 					height = int.Parse(type);
 					map[x,y] = height;
-					for (int h = 0; h < height; h++) {
-						if (y == y_goal && x == x_goal && h == height-1){
-							// Instantiate a new TilePrefab
+					for (int h = 0; h < height; h++) { // pintar un cubo por cada altura
+						if (y == y_goal && x == x_goal && h == height-1){ // coincide con las coordenadas objetivo
 							go = Instantiate (goalPrefab) as GameObject;
-						}else{
-							// Instantiate a new TilePrefab
+						}else{ // casilla normal
 							go = Instantiate (tilePrefab) as GameObject;
 						}
 						ti = go.GetComponent<Tile> ();
