@@ -30,7 +30,7 @@ public class LayoutTiles : MonoBehaviour {
 		levelsXMLR = new PT_XMLReader(); // Create a PT_XMLReader
 		levelsXMLR.Parse(levelText.text); // Parse the Rooms.xml file
 		levelsXML = levelsXMLR.xml["xml"][0]["level"]; // Pull all the <room>s
-		BuildLevel (ApplicationModel.level);
+		BuildLevel (ApplicationModel.XMLlevel);
 	}
 	public void BuildLevel(PT_XMLHashtable level) {
 		// Destroy any old Tiles
@@ -68,19 +68,17 @@ public class LayoutTiles : MonoBehaviour {
 				case ".":
 				case " ":
 				case "_":
-				case "0":
+				case "0": // cualquiera de estas cosas se interpreta como hueco
 					height = 0;
 					map[x,y] = 0;
 					break;
-				default:
+				default:// todo lo demas sera un numero que indica la altura
 					height = int.Parse(type);
 					map[x,y] = height;
-					for (int h = 0; h < height; h++) {
-						if (y == y_goal && x == x_goal && h == height-1){
-							// Instantiate a new TilePrefab
+					for (int h = 0; h < height; h++) { // pintar un cubo por cada altura
+						if (y == y_goal && x == x_goal && h == height-1){ // coincide con las coordenadas objetivo
 							go = Instantiate (goalPrefab) as GameObject;
-						}else{
-							// Instantiate a new TilePrefab
+						}else{ // casilla normal
 							go = Instantiate (tilePrefab) as GameObject;
 						}
 						ti = go.GetComponent<Tile> ();
@@ -103,23 +101,21 @@ public class LayoutTiles : MonoBehaviour {
 		Game.S.setMap (map, x_goal, y_goal, x_start, y_start, z_start );
 
 	}
-	public void BuildLevel(int num){
-		BuildLevel (num.ToString ());
-	}
+
 	// Build a level based on level number. This is an alternative version of
 	// BuildLevel that grabs levelXML based on num.
-	public void BuildLevel(string lNumStr) {
+	public void BuildLevel(int num) {
 		PT_XMLHashtable levelHT = null;
 		for (int i=0; i<levelsXML.Count; i++) {
 			PT_XMLHashtable ht = levelsXML[i];
-			if (ht.att("num") == lNumStr) {
+			if (int.Parse(ht.att("num")) == num) {
 				levelHT = ht;
 				break;
 			}
 		}
 		if (levelHT == null) {
 			Utils.tr("ERROR","LayoutTiles.BuildLevel()",
-			         "Level not found: "+lNumStr);
+			         "Level not found: "+num);
 			return;
 		}
 		BuildLevel(levelHT);
