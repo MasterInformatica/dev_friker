@@ -1,0 +1,85 @@
+% Created 2015-12-15 mar 19:17
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{BlockPuzzle, Propuesta para Práctica Final DEV}
+\author{Doménech Arellano, Jesús Javier}
+\date{15 de Diciembre de 2015}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+\setcounter{tocdepth}{3}
+\tableofcontents
+\vspace*{1cm}
+
+\section{Propuesta}
+\label{sec-1}
+\subsection{Descripción}
+\label{sec-1-1}
+
+
+  El juego que he elegido desarrollar, lo he bautizado como
+  \textbf{BlockPuzzle}. Su funcionamiento es muy sencillo aunque
+  superar niveles a veces puede volverse realmente complicado.\\
+
+  El juego consiste en mover tu pieza (cubo o paralelepípedo de base
+  cuadrada) por un mapa, tu figura irá girando por sus caras
+  avanzando. El objetivo final es llevar a tu figura a una casilla
+  especial, pero debes encajar en ella.
+\subsection{Componentes}
+\label{sec-1-2}
+
+   El juego básicamente tendrá un par de escenas:
+\begin{itemize}
+\item Gestor de niveles.
+\item El nivel (será una escena genérica que cargue un nivel a partir
+     de un mapa).
+\item HighScores.
+\end{itemize}
+   Además tendrá objetos que controlar, que son:
+\begin{itemize}
+\item Mapa.
+\item Pieza que juega.
+\item Puntuacion (por pasos y tiempo).
+\item Niveles disponibles (y con suerte, posibilidad de niveles
+     bloqueados).
+\end{itemize}
+\subsection{Características}
+\label{sec-1-3}
+
+  Inicialmente el objetivo de la práctica es conseguir una versión
+  jugable con los siguientes detalles:
+\begin{itemize}
+\item Lee mapas de XML.
+\item La figura tendrá una cara especial que será la que debe casar con
+    la casilla objetivo.
+\item Te puedes caer por los bordes o agujeros del mapa.
+\item Al llegar a la casilla objetivo se pasa el nivel.
+\item Se cuenta el numero de pasos, hay tiempo limite por nivel.
+\item Acepta jugar con un Cubo o un paralelepípedo.
+\item Permite mapas de diferentes alturas.
+\item Memoria de Records de usuario.
+\end{itemize}
+
+\end{document}
